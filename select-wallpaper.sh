@@ -52,7 +52,7 @@ select_wallpaper() {
       --cache-file /dev/null \
       --define "image-size=${THUMBNAIL_WIDTH}x${THUMBNAIL_HEIGHT}" \
       --lines $lines \
-      --columns 3 \
+      --columns $columns \
       --allow-images \
       --hide-scroll \
       --conf ~/.config/wofi/wallpaper.conf
