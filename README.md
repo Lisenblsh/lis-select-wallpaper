@@ -1,5 +1,5 @@
 ```sh 
-sudo pacman -Sy swww wofi imagemagick
+sudo pacman -Sy swww wofi imagemagick calc
 ```
 
 copy or create symlink for ``wallpaper.conf`` to ``.config/wofi`` folder
