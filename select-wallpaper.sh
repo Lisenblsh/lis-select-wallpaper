@@ -13,6 +13,7 @@ if [[ -f "$thumb_dir/current" ]]; then
 fi
 
 create_thumbnails() {
+  menu_items=""
   while read -r f; do
     base="$(basename "$f")"
     thumb="$thumb_dir/${base%.*}.png"
@@ -35,6 +36,7 @@ create_thumbnails() {
         for (f in num) print num[f]
     }'
   )
+
   total=$(echo -e $menu_items | wc -l)
 }
 
@@ -58,16 +60,22 @@ select_wallpaper() {
       --conf ~/.config/wofi/wallpaper.conf
   )"
   [[ -n "$choice" ]] || exit 1
-  thumb_file="${choice#img:}"
-  base="$(basename "$thumb_file" .png)"
-  wall="$(find -L "$WALL_DIR" -maxdepth 3 -type f -iname "$base.*" | head -n1)"
+  if [[ "$choice" == "" ]]; then
+    get_random_wallpaper
+  else
+    thumb_file="${choice#img:}"
+    base="$(basename "$thumb_file" .png)"
 
-  [[ -f "$wall" ]] || {
-    notify-send "wallpaper-picker" "Оригинал не найден"
-    exit 1
-  }
+    wall="$(find -L "$WALL_DIR" -maxdepth 3 -type f -iname "$base.*" | head -n1)"
 
-  echo $wall
+    [[ -f "$wall" ]] || {
+      notify-send "wallpaper-picker" "Оригинал не найден"
+      exit 1
+    }
+
+    echo $wall
+  fi
+
 }
 
 start_daemon() {

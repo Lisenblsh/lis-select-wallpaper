@@ -1,3 +1,5 @@
+U need to install ``NerfFonts``
+
 ```sh 
 sudo pacman -Sy swww wofi imagemagick calc
 ```
