@@ -4,7 +4,7 @@ U need to install ``NerfFonts``
 sudo pacman -Sy swww wofi imagemagick calc
 ```
 
-copy or create symlink for ``wallpaper.conf`` to ``.config/wofi`` folder
+copy or create symlink for ``wallpaper.conf`` and ``wallpaper.css`` to ``.config/wofi`` folder
 
 ```
 Usage: ./select-wallpaper.sh [options]
