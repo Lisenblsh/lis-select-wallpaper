@@ -79,10 +79,10 @@ select_wallpaper() {
 }
 
 start_daemon() {
-  if ! swww query >/dev/null 2>&1; then
-    swww-daemon --format xrgb >/dev/null 2>&1 &
+  if ! awww query >/dev/null 2>&1; then
+    awww-daemon --format xrgb >/dev/null 2>&1 &
     for _ in {1..20}; do
-      swww query >/dev/null 2>&1 && break
+      awww query >/dev/null 2>&1 && break
       sleep 0.05
     done
   fi
@@ -121,12 +121,34 @@ get_wallpaper() {
 }
 
 get_random_wallpaper() {
-  wall="$(find -L "$WALL_DIR" -maxdepth 3 -type f -iname "*.*" ! -name "$(basename "$CURRENT_WALL")" | shuf -n 1)"
+  local state_file="${XDG_CACHE_HOME:-$HOME/.cache}/wallpapers.queue"
+
+  # если файла нет или пустой — создаём новый перемешанный список
+  if [[ ! -s "$state_file" ]]; then
+    notify-send 'пустой'
+    find -L "$WALL_DIR" -maxdepth 3 -type f \
+      ! -samefile "$CURRENT_WALL" |
+      shuf >"$state_file"
+  fi
+
+  # берём первую строку
+  IFS= read -r wall <"$state_file"
+
+  # если вдруг пусто (редкий случай)
+  if [[ -z "$wall" ]]; then
+    rm -f "$state_file"
+    echo "$CURRENT_WALL"
+    return
+  fi
+
+  # удаляем первую строку из файла (сдвигаем очередь)
+  tail -n +2 "$state_file" >"${state_file}.tmp" && mv "${state_file}.tmp" "$state_file"
+
   echo "$wall"
 }
 
 set_wallpaper() {
-  swww img "$1" \
+  awww img "$1" \
     --transition-type wipe \
     --transition-fps 60 \
     --transition-angle 30 \
